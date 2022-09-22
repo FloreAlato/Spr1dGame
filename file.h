@@ -100,30 +100,27 @@ char *make_path(char filename[], char extention[]) {
 
 
 
-char **list_files(FILE *file, int numero) {
+char **trova_nomi(FILE *file, int numero) {
 
-    char **files = NULL;
+    char **nomi = NULL;
 
-    files = (char **) calloc(sizeof(char *), numero);
-    if(files == NULL) {
-        printf("\n\nERRORE! Allocazione fallita!");
+    nomi = (char **) calloc(numero, sizeof(char *));
+    if(nomi == NULL) {
+        printf("\n\nERRORE! Allocazione fallita!\n\n");
         exit(-1);
     }
 
-    // essendo una matrice, l'allocazione avviene in due parti, usando il seguente ciclo for
-    // all'interno di questo avviene anche la lettura dei nomi dal file
-
     for(int k = 0; k < numero; k++) {
-        files[k] = (char *) calloc(sizeof(char), 32);
-        if(files[k] == NULL) {
-            printf("\n\nERRORE! Allocazione fallita!");
+        nomi[k] = (char *) calloc(sizeof(char), 32);
+        if(nomi[k] == NULL) {
+            printf("\n\nERRORE! Allocazione fallita!\n\n");
             exit(-1);
         }
 
-        fread(files[k], sizeof(char), 32, file);
+        fread(nomi[k], sizeof(char), 32, file);
     }
 
-    return files;
+    return nomi;
 }
 
 
@@ -159,7 +156,7 @@ void add_file(char *newname) {
 
     fread(&many, sizeof(int), 1, file);
 
-    filenames = list_files(file, many);
+    filenames = trova_nomi(file, many);
 
     fclose(file);
 
