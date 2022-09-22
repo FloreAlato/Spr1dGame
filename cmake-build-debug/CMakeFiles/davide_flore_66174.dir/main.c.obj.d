@@ -3,6 +3,7 @@ CMakeFiles/davide_flore_66174.dir/main.c.obj: \
  C:\Users\Dando\Desktop\davide_flore_606166174\murra.h \
  C:\Users\Dando\Desktop\davide_flore_606166174\tris.h \
  C:\Users\Dando\Desktop\davide_flore_606166174\black_jack.h \
+ C:\Users\Dando\Desktop\davide_flore_606166174\file.h \
  C:\Users\Dando\Desktop\davide_flore_606166174\main.h \
  C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/x86_64-w64-mingw32/include/stdio.h \
  C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/x86_64-w64-mingw32/include/corecrt_stdio_config.h \
