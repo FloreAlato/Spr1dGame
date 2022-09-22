@@ -49,12 +49,12 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "C:/Users/dando/Desktop/davide_flore_66174/cmake-build-debug",
-		"source" : "C:/Users/dando/Desktop/davide_flore_66174"
+		"build" : "C:/Users/Dando/Desktop/davide_flore_606166174/cmake-build-debug",
+		"source" : "C:/Users/Dando/Desktop/davide_flore_606166174"
 	},
 	"version" : 
 	{
 		"major" : 2,
-		"minor" : 3
+		"minor" : 4
 	}
 }

@@ -1,0 +1,3 @@
+"C:\Program Files\JetBrains\CLion 2022.2.3\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\davide_flore_66174.dir/objects.a
+C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\ar.exe qc CMakeFiles\davide_flore_66174.dir/objects.a @CMakeFiles\davide_flore_66174.dir\objects1.rsp
+C:\PROGRA~1\JETBRA~1\CLION2~1.3\bin\mingw\bin\gcc.exe -g -Wl,--whole-archive CMakeFiles\davide_flore_66174.dir/objects.a -Wl,--no-whole-archive -o davide_flore_66174.exe -Wl,--out-implib,libdavide_flore_66174.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\davide_flore_66174.dir\linklibs.rsp

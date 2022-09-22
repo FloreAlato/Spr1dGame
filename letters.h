@@ -213,6 +213,11 @@ char numbers[10][5][10] = {
 };
 
 
+
+
+
+
+// rivedere gli spazi
 void print_num(const int *numero, int dim) {
 
     int i, j;

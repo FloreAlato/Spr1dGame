@@ -14,6 +14,23 @@ int main() {
     int i;
 
 
+    // SETUP SCHERMO
+
+    printf("[%s]: Regola lo schermo fino a vedere il 25", game_name());
+    for(i = 0; i <= PAGE_SIZE; i++) {
+        printf("%d\n", i);
+    }
+
+
+
+
+
+
+
+
+
+
+
     srand(time(NULL));
 
 
