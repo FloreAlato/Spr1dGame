@@ -2,7 +2,7 @@
 
 
 
-void scrematura(Elenco *, int);
+Elenco *scrematura(Elenco *, int);
 void svolgimento(Elenco *, int);
 void finale(Elenco *);
 
@@ -30,11 +30,6 @@ int main() {
 
     int id, segnaposto;
     Elenco *prov = NULL;
-
-    Elenco **groups = NULL;
-    Elenco *new = NULL;
-    bool *pla = NULL;
-    int target, group_size, size, winner;
 
 
 
@@ -115,7 +110,7 @@ int main() {
     getchar();
 
     for(i = 1; i < PAGE_SIZE + 5; i++) {
-        printf("%d\n", i);
+        printf("\n%d", i);
     }
     printf("\n[%s]: Ora che hai regolato lo schermo, premi invio per cominciare (invio)", game_name());
     getchar();
@@ -263,12 +258,7 @@ int main() {
             fread(&numero_giocatori, sizeof(int), 1, file);
             fread(&numero_giocatori_veri, sizeof(int), 1, file);
 
-
-            // TROCVARE E RIFARE QUESTA FUNZIONE
-            // rivedere le specifiche
-
-            //giocatori = componi_elenco(numero_giocatori);
-
+            giocatori = componi_elenco(numero_giocatori);
 
             // giocatori veri
             for(j = 0; j < numero_giocatori_veri; j++) {
@@ -288,10 +278,10 @@ int main() {
 
 
 
-
+        // chiude il file
         fclose(file);
 
-        // chiude il file
+        // libera l'array di nomi
         free(files);
 
     }
@@ -304,75 +294,73 @@ int main() {
 
 
 
-    // commentare e RIADATTARE
-
+    // solo se la partita non è cominciata
     if(game == false) {
 
-        numero_giocatori = get_int("\n\nNumero giocatori: ", 16, 1000);
+        printf("\n\n[%s]: Numero giocatori\n[%s]", game_name(), nome_utente);
+        numero_giocatori = get_int(": ", 16, 1000);
 
         // riempie la lista dei giocatori
-        //giocatori = componi_elenco(numero_giocatori);
+        giocatori = componi_elenco(numero_giocatori);
 
+        // chiede quanti profili usare
+        printf("\n\n[%s]: Quanti di questi %d profini vuoi usare?\n[%s]", game_name(), numero_profili, nome_utente);
+        numero_giocatori_veri = get_int(": ", 0, numero_profili);
 
-        printf("\n\nQuanti di questi %d profini vuoi usare: ", numero_profili);
-        numero_giocatori_veri = get_int("", 0, numero_profili);
-
-        prov = (Elenco *) calloc(sizeof(Elenco), numero_profili);
+        // array provvisoria, per riempire
+        prov = (Elenco *) calloc(numero_profili, sizeof(Elenco));
         if(prov == NULL) {
-            printf("\nERRORE! Allocazione fallita!\n");
+            printf("\n\nERRORE! Allocazione fallita!\n\n");
             exit(-1);
         }
 
+        // riempie l'array provvisoria
         for(k = 0; k < numero_profili; k++) {
             prov[k].id = k;
             prov[k].p = &giocatori_veri[k];
         }
 
-
         // scelta del profilo al quale assegnare il giusto indice
         for(j = 0; j < numero_giocatori_veri; j++) {
 
-
-            // debuggato, lascia stampa solo i profili non ancora scelti
-
-            printf("\nProfili a disposizione:");
+            // stampa i profili non ancora scelti
+            printf("\n[%s]: Profili a disposizione:", game_name());
 
             for(i = 0; i < numero_profili; i++) {
-
                 if(prov[i].p != NULL) {
                     printf("\n[%d] -> %s", i, prov[i].p->nome);
                 }
             }
 
-
-            // deebuggato, non puoi scegliere due volte lo stesso profilo
-
+            // ogni profilo può essere scelto solo una volta
             do {
-                scelta = get_int("\n\n[Tu]: ", 0, numero_giocatori_veri);
+                printf("\n\n[%s]", nome_utente);
+                scelta = get_int(": ", 0, numero_giocatori_veri);
                 if(prov[scelta].p == NULL) {
-                    printf("\nQuesto giocatore e' gia' stato scelto!");
+                    printf("\n[%s]: Questo giocatore e' gia' stato scelto!", game_name());
                 }
             } while(prov[scelta].p == NULL);
 
 
             // debuggato, non puoi inserire lo stesso id per due profili
-
             do {
                 scelto = false;
-                printf("\nId di %s: ", prov[scelta].p->nome);
-                id = get_int("", 0, numero_giocatori);
+                printf("\n[%s]: Id di %s\n[%s]", game_name(), prov[scelta].p->nome, nome_utente);
+                id = get_int(": ", 0, numero_giocatori);
                 if(giocatori[id].p == NULL) {
                     giocatori_veri[scelta].index = id;
                     giocatori[id].p = &giocatori_veri[scelta];
                 } else {
-                    printf("\nQuesto id e' gia' preso, inseriscine un altro...");
+                    printf("\n[%s]: Questo id e' gia' preso, inseriscine un altro...", game_name());
                     scelto = true;
                 }
             } while(scelto == true);
 
+            // segna che il profilo è stato scelto
             prov[scelta].p = NULL;
         }
 
+        // l'array non serve più
         free(prov);
     }
 
@@ -380,14 +368,22 @@ int main() {
 
 
 
+    // STAMPA DEI GIOCATORI PER DEBUG
 
 
 
     // stampa la lista dei giocatori
-    //stampa_lista_giocatori(&giocatori[0], numero_giocatori);
+    printf("\n\n");
+    for(i = 0; i < numero_giocatori; i++) {
+        printf("[%s] -> ", print_player(giocatori[i]));
+        if(giocatori->vivo == true) {
+            printf("<vivo>\n");
+        } else {
+            printf("<morto>\n");
+        }
+    }
 
     // stampa i profili giocatore
-
     printf("\n\n");
     for(i = 0; i < numero_profili; i++) {
 
@@ -399,12 +395,12 @@ int main() {
 
 
     // scrematura
+    Elenco *nuov = scrematura(&giocatori[0], numero_giocatori);
 
 
 
 
-    free(giocatori);
-    free(giocatori_veri);
+
 
 
 
@@ -444,12 +440,6 @@ int main() {
             }
     };
 
-
-    // scrematura
-
-
-
-
     // svolgimento
 
 
@@ -459,8 +449,217 @@ int main() {
 
 
 
+    free(giocatori);
+    free(giocatori_veri);
+
+
     return 0;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Elenco *scrematura(Elenco *participants, int totale) {
+
+    int i = 0, j, k, counter;
+    int target, group_size, segnaposto, size, winner;
+
+    Elenco *new = NULL;
+    Elenco **groups = NULL;
+    bool *pla = NULL;
+
+    // nuovo elenco
+    new = (Elenco *) calloc(totale, sizeof(Elenco));
+    if(new == NULL) {
+        printf("\n\nERRORE! Allocazione fallita!\n\n");
+        exit(-1);
+    }
+    for(k = 0; k < totale; k++) {
+        new[k] = participants[k];
+    }
+
+
+    // ottiene il numero desiderato di giocatori
+    while(potenza(2, i) < totale) {
+        i++;
+    }
+    target = potenza(2, i - 2);
+    printf("\n\n\n[%s]: Troppi! Facciamo %d?", game_name(), target);
+
+    // dividi in gruppetti
+    group_size = totale / target;
+
+    // alloca i gruppetti
+    groups = (Elenco **) calloc(target, sizeof(Elenco *));
+    if(groups == NULL) {
+        printf("\n\nERRORE! Allocazione fallita!");
+        exit(-1);
+    }
+    for(i = 0; i < target; i++) {
+        groups[i] = (Elenco *) calloc(group_size + 1, sizeof(Elenco));
+        if(groups[i] == NULL) {
+            printf("\n\nERRORE! Allocazione fallita!");
+            exit(-1);
+        }
+    }
+
+    // riempie l'array pla
+    pla = (bool *) calloc(target, sizeof(bool));
+    if(pla == NULL) {
+        printf("\n\nERRORE! Allocazione fallita!\n\n");
+        exit(-1);
+    }
+    for(i = 0; i < target; i++) {
+        pla[i] = false;
+    }
+
+    // riempie i gruppetti randomizzando
+    counter = totale - 1;
+    for(i = 0; i <= group_size; i++) {
+        for(j = 0; j < target; j++, counter--) {
+            if(counter >= 0) {
+                segnaposto = rand_int(0, counter);
+                groups[j][i] = new[segnaposto];
+
+                // salva i gruppi che contengono giocatori
+                if(is_player(groups[j][i])) {
+                    pla[j] = true;
+                }
+
+                new[segnaposto] = new[counter];
+            } else {
+                groups[j][i].id = -1;
+            }
+        }
+    }
+
+    // stampa i gruppetti creati
+    for(i = 0; i < target; i++) {
+        printf("\n%do gruppo: ", i + 1);
+        for(j = 0; j <= group_size; j++) {
+            printf("%s    ", print_player(groups[i][j]));
+        }
+    }
+
+
+
+    // stampa i gruppetti in modo ordinato
+    // RISCRIVERE IN MODO RICORSIVO
+    printf("\n\n\n");
+
+    // stampa i gruppetti in modo ordinato
+    stampa_gruppetti(&groups[0], target, group_size, 5);
+    getchar();
+    getchar();
+
+    printf("\n\n");
+
+
+
+
+
+
+    // RIVEDI TUTTA QUESTA PARTE
+
+
+
+
+    // gioca a indovina il numero e componi l'elenco da ritornare
+
+    // alloca elenco
+    new = (Elenco *) realloc(new, sizeof(Elenco) * target);
+    if(new == NULL) {
+        printf("ERRORE! Rillocazione fallita!");
+        exit(-1);
+    }
+
+
+    // controlla la fine
+    // controlla se ci sono giocatori
+    i = 0, segnaposto = 0;
+    while(i < target) {
+
+        // controlla lunghezza
+        if(groups[i][group_size].id == -1) {
+            size = group_size - 1;
+        } else {
+            size = group_size;
+        }
+
+
+        if(pla[i] == false) {
+            new[i] = groups[i][rand_int(0, size)];
+        }
+
+        // correggere gli errori
+
+        if(pla[i] == true || i == target - 1) {
+
+            if(i > 0 && segnaposto != i) {
+                printf("\nI seguenti gruppi hanno ottenuto i seguenti risultati:\n");
+            }
+
+            // stampa i precedenti
+            for(j = segnaposto; j < i; j++) {
+                printf("%do gruppo: ", j);
+                print_player(new[j]);
+                printf("\n");
+            }
+            getchar();
+
+            if(pla[i] == true) {
+
+                printf("\n\nSI GIOCAAA");
+
+                printf("\n\n");
+
+                // RISCRIVERE QUESTO GIOCO
+                //winner = indovina_il_numero(groups[i], size);
+
+                // FRONTMAN
+                for(k = 0; k <= size; k++) {
+                    if(is_player(groups[i][k]) && strcmp(groups[i][k].p->nome, "Riccardo Scateni") == 0) {
+                        winner = k;
+                        break;
+                    }
+                }
+
+                new[i] = groups[i][winner];
+                getchar();
+
+                segnaposto = i + 1;
+
+            } else {
+                printf("%do gruppo: %s", i, print_player(new[i]));
+            }
+
+            printf("\n");
+        }
+
+        i++;
+    }
+
+
+    // ora i gruppi non servono più
+    free(groups);
+
+    return new;
+}
 
 

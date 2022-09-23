@@ -228,12 +228,94 @@ char *print_player(Elenco player) {
 
 
 
-int not(int input) {
-    if(input == 0) {
-        return 1;
-    } else {
-        return 0;
+
+
+Elenco *componi_elenco(int numero_giocatori) {
+
+    int i;
+    Elenco *players = NULL;
+
+    players = (Elenco *) calloc(numero_giocatori, sizeof(Elenco));
+    if(players == NULL) {
+        printf("\n\nERRORE! Allocazione fallita!\n\n");
+        exit(-1);
     }
+
+    for(i = 0; i < numero_giocatori; i++) {
+        players[i].id = i;
+        players[i].p = NULL;
+        players[i].vivo = true;
+    }
+
+    return players;
+}
+
+
+
+
+
+
+
+
+
+
+void stampa(Elenco **groups, int size, int start, int finish) {
+
+    printf("\n");
+    for(int j = 0; j <= size; j++) {
+        for(int k = start; k < finish; k++) {
+
+            if(is_player(groups[k][j])) {
+                if(strlen(groups[k][j].p->nome) >= 21) {
+                    for(int d = 0; d <= 21; d++) {
+                        printf("%c", groups[k][j].p->nome[d]);
+                    }
+                    printf(" ");
+                } else {
+                    printf("%s", groups[k][j].p->nome);
+                    for(int t = 0; t < 22 - strlen(groups[k][j].p->nome); t++) {
+                        printf(" ");
+                    }
+                }
+            } else {
+                print_player(groups[k][j]);
+                printf("         ");
+            }
+
+        }
+        printf("\n");
+    }
+}
+
+
+
+void stampa_gruppetti(Elenco **groups, int target, int size, int width) {
+
+    int i = 0, segnaposto = 0;
+    int width_save = width;
+
+
+    while(i < target) {
+        if(i != 0 && i % width == 0) {
+
+            // stampa i gruppetti da segnaposto a width
+            stampa(&groups[0], size, segnaposto, width);
+
+            segnaposto = width;
+            width += width_save;
+
+            printf("\n\n");
+        }
+        printf("%do gruppo:          ", i + 1);
+        if(i < 9) {
+            printf("  ");
+        } else if(i < 99) {
+            printf(" ");
+        }
+
+        i++;
+    }
+    stampa(&groups[0], size, segnaposto, target);
 }
 
 

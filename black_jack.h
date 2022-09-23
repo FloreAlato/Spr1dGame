@@ -208,9 +208,9 @@ int black_jack(Elenco *finalisti) {
 
                 // controlla che il punteggio non ecceda il massimo
                 if(punti[i] > 21) {
-                    end = not(i);
+                    //end = not(i);
                     continua[i] = false;
-                    continua[not(i)] = false;
+                    //continua[not(i)] = false;
                 }
             }
         }
