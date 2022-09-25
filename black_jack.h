@@ -38,7 +38,6 @@ void layout_black(int, carta **, int[2], Elenco *, int[2]);
 void stampa_carta(carta *, int, int);
 void recursione(carta *, int, int);
 void stampa_vuota();
-void segnapunti(carta *, int);
 
 
 
@@ -327,14 +326,6 @@ void stampa_vuota() {
            "|   ?   |\n"
            "|       |\n"
            " ------- ");
-}
-
-
-
-
-void segnapunti(carta *mazzo, int pos) {
-
-
 }
 
 

@@ -3,6 +3,7 @@
 
 CMakeFiles/davide_flore_66174.dir/main.c.obj: ../main.c \
   ../scrematura.h \
+  ../indovina_il_numero.h \
   ../murra.h \
   ../tris.h \
   ../black_jack.h \
@@ -44,13 +45,15 @@ CMakeFiles/davide_flore_66174.dir/main.c.obj: ../main.c \
 
 ../scrematura.h:
 
+../indovina_il_numero.h:
+
+../black_jack.h:
+
 C:/Program\ Files/JetBrains/CLion\ 2022.2.3/bin/mingw/x86_64-w64-mingw32/include/corecrt_wstdlib.h:
 
 ../murra.h:
 
 ../tris.h:
-
-../black_jack.h:
 
 ../file.h:
 

@@ -1,18 +1,78 @@
-git push -u remote otigin (otigin con la t)
 
 
 
 
 
 
- 0 | 0 | 0 
----|---|---
- 0 | 0 | 0 
----|---|---
- 0 | 0 | 0 
+
+MIGLIORARE LA SCHERMATA DI VITTORIA DI INDOVINA IL NUMERO
 
 
-Ricorda che comincia quello con il numero identificativo minore
+
+
+
+    ProfiloGiocatore luigi = {
+            0,
+            "Luigi Maranza",
+            0,
+            0,
+            0,
+            0,
+            0
+    };
+
+    ProfiloGiocatore marco = {
+            3,
+            "Marco Starco",
+            0,
+            0,
+            0,
+            0,
+            0
+    };
+
+    Elenco fine[3] = {
+            {
+                0,
+                true,
+                &luigi
+            },
+            {
+                1,
+                true,
+                NULL
+            },
+            {
+                2,
+                true,
+                &marco
+            }
+    };
+
+
+
+    getchar();
+    indovina_il_numero(fine, 3);
+
+
+
+
+
+
+
+
+
+
+    return 0;
+
+
+
+
+
+
+
+
+
 
 
 // controlla la fine

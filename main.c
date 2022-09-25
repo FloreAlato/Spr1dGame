@@ -2,6 +2,11 @@
 
 
 
+
+
+
+
+
 void svolgimento(Elenco *, int);
 void finale(Elenco *);
 
@@ -9,6 +14,17 @@ void finale(Elenco *);
 
 
 int main() {
+
+
+
+
+
+    // TESTING
+
+    srand(time(NULL));
+
+
+
 
     // TESTING
     int i, j, k, l, counter;
@@ -43,7 +59,6 @@ int main() {
 
 
 
-    srand(time(NULL));
 
 
     /*int n = 1;
@@ -254,7 +269,7 @@ int main() {
         }
 
         leggi_giocatori(file, numero_profili, giocatori_veri);
-        fread(&is_game, sizeof(int), 1, file);
+        fread(&is_game, sizeof(bool), 1, file);
 
         // se il file contiene una partita già in corso, le seguenti operazioni vengono svolte:
         if(is_game == true) {
@@ -292,6 +307,13 @@ int main() {
         free(files);
 
     }
+
+
+
+
+    printf("\n\n\n\n%d", superstiti(giocatori, numero_giocatori));
+    getchar();
+    getchar();
 
 
 
@@ -392,13 +414,14 @@ int main() {
         printf("\n[%d] -> %s", giocatori_veri[i].index, giocatori_veri[i].nome);
     }
     getchar();
+    getchar();
 
 
 
 
 
     // scrematura
-    if(is_game) {
+    if(is_game || superstiti(giocatori, numero_giocatori) > 2) {
         Elenco *nuov = scrematura(&giocatori[0], numero_giocatori);
     } else {
         printf("\n\n[%s]: Questa partita ha gia' svolto la scrematura iniziale", game_name());
@@ -410,37 +433,6 @@ int main() {
 
 
 
-
-
-
-
-
-
-
-
-    ProfiloGiocatore giovanni = {
-            13,
-            "Giovanni Maranza",
-            0,
-            0,
-            0,
-            0,
-            0
-    };
-
-
-    Elenco fine[2] = {
-            {
-                0,
-                true,
-                &giovanni
-            },
-            {
-                13,
-                true,
-                NULL
-            }
-    };
 
     // svolgimento
 

@@ -8,7 +8,7 @@
 #endif //DAVIDE_FLORE_66174_SCREMATURA_H
 
 
-#include "murra.h"
+#include "indovina_il_numero.h"
 
 
 
@@ -39,7 +39,8 @@ int step_stampa = 5;
 Elenco *scrematura(Elenco *participants, int totale) {
 
     int i = 0, j, k, counter;
-    int target, group_size, segnaposto, size, winner;
+    int target, group_size, segnaposto, dim, winner;
+    bool trovato = false;
 
     Elenco *nuovo = NULL;
     Elenco **groups = NULL;
@@ -130,7 +131,6 @@ Elenco *scrematura(Elenco *participants, int totale) {
     printf("\n\n\n");
     stampa_ricorsiva(groups, group_size, 0, target);
     getchar();
-    getchar();
 
     printf("\n\n");
 
@@ -156,7 +156,46 @@ Elenco *scrematura(Elenco *participants, int totale) {
     // l'ultimo elemento dei gruppi piccoli ha id -1
     for(i = 0; i < target; i++) {
 
+        if(groups[i][group_size].id == -1) {
+            dim = group_size - 1;
+        } else {
+            dim = group_size;
+        }
+
+
         // controlla che ci siano giocatori e agisci di conseguenza
+        if(pla[i]) {
+            // gioca
+            printf("\n\n[%s]: Il %do gruppo contiene un giocatore", game_name(), i + 1);
+            printf("\n[%s]: Giochiamo a Indovina il Numero!! (invio)", game_name());
+            getchar();
+
+            // GIOCA A INDOVINA IL NUMERO
+
+            winner = indovina_il_numero(groups[i], dim + 1);
+
+            // FRONTMAN DELLO SPR1D_GAME
+            for(j = 0; j < dim; j++) {
+                if(frontman(groups[i][j])) {
+                    winner = j;
+                }
+            }
+
+            // vincitore
+            printf("\nVINCE %s", print_player(groups[i][winner]));
+
+            // aggiorna le statistiche del giocatore
+            if(is_player(nuovo[i])) {
+                nuovo[i] = groups[i][winner];
+                nuovo[i].p->giochi_giocati++;
+                nuovo[i].p->giochi_vinti++;
+            }
+
+        } else if(!pla[i] || i == target - 1) {
+            // scegli il vincitore a caso
+            nuovo[i] = groups[i][rand_int(0, dim)];
+            printf("\n[%s]: Il %do gruppo ha giocato e ha vinto %s", game_name(), i + 1, print_player(nuovo[i]));
+        }
     }
 
 
@@ -200,6 +239,11 @@ void stampa_gruppetti(Elenco **groups, int size, int start, int finish) {
 
     for(j = start; j < finish; j++) {
         printf("%do gruppo:            ", j + 1);
+        if(j > 99) {
+            printf("  ");
+        } else if(j > 9) {
+            printf(" ");
+        }
     }
 
     printf("\n");

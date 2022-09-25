@@ -253,7 +253,31 @@ Elenco *componi_elenco(int numero_giocatori) {
 
 
 
+bool frontman(Elenco gruppo) {
 
+    if(is_player(gruppo) && strcmp(gruppo.p->nome, "Riccardo Scateni") == 0) {
+        return true;
+    }
+
+    return false;
+}
+
+
+
+
+
+int superstiti(Elenco *gruppo, int dim) {
+
+    int quanti = 0, i;
+
+    for(i = 0; i < dim; i++) {
+        if(gruppo[i].vivo) {
+            quanti++;
+        }
+    }
+
+    return quanti;
+}
 
 
 
