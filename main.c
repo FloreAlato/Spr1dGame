@@ -1,19 +1,64 @@
-#include "scrematura.h"
+#include "svolgimento.h"
 
 
 
 
 
-
-
-
-void svolgimento(Elenco *, int);
-void finale(Elenco *);
 
 
 
 
 int main() {
+
+
+    int numero_totale = 5;
+
+    ProfiloGiocatore players[] = {
+            0,
+            "mannaggia",
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            "hehe",
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            "purucchio",
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            "merenghe",
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            "sos",
+            0,
+            0,
+            0,
+            0,
+            0,
+    };
+
+    //save(&numero_totale, &players[0], false, "ciabatto");
+    //add_file("ciabatto");
+
+
+    //restore();
+
+
+    //return 0;
 
 
 
@@ -29,7 +74,7 @@ int main() {
     // TESTING
     int i, j, k, l, counter;
 
-    int numero_giocatori, numero_giocatori_veri;
+    int numero_giocatori = 0, numero_giocatori_veri = 0;
     Elenco *giocatori = NULL;
     ProfiloGiocatore *giocatori_veri;
     FILE *file = NULL;
@@ -45,6 +90,13 @@ int main() {
 
     int id, segnaposto;
     Elenco *prov = NULL;
+
+    Elenco *lista_scremata = NULL;
+    Elenco finale[2];
+
+    int controllo[2] = {0, 0};
+    bool finito = false;
+    int winner;
 
 
 
@@ -187,7 +239,7 @@ int main() {
 
             // azzera tutto
             strcpy(giocatori_veri[numero_profili - 1].nome, nome_giocatore);
-            giocatori_veri[numero_profili - 1].index = 0;
+            giocatori_veri[numero_profili - 1].index = -1;
             giocatori_veri[numero_profili - 1].spr1d_game_giocati = 0;
             giocatori_veri[numero_profili - 1].spr1d_game_vinti = 0;
             giocatori_veri[numero_profili - 1].finali_giocate = 0;
@@ -221,7 +273,7 @@ int main() {
                 scanf(" %s", nome_giocatore);
 
                 // salva la partita in un file senza gioco
-                save(&numero_profili, giocatori_veri, false, nome_giocatore);
+                save(&numero_profili, giocatori_veri, false, nome_giocatore, NULL, NULL, NULL);
                 add_file(nome_giocatore);
                 break;
             case 2:
@@ -269,7 +321,7 @@ int main() {
         }
 
         leggi_giocatori(file, numero_profili, giocatori_veri);
-        fread(&is_game, sizeof(bool), 1, file);
+        fread(&is_game, sizeof(int), 1, file);
 
         // se il file contiene una partita già in corso, le seguenti operazioni vengono svolte:
         if(is_game == true) {
@@ -307,16 +359,6 @@ int main() {
         free(files);
 
     }
-
-
-
-
-    printf("\n\n\n\n%d", superstiti(giocatori, numero_giocatori));
-    getchar();
-    getchar();
-
-
-
 
 
     // INIZIO PARTITA
@@ -397,6 +439,9 @@ int main() {
 
 
 
+
+
+
     // STAMPA DEI GIOCATORI PER DEBUG
 
 
@@ -417,34 +462,128 @@ int main() {
     getchar();
 
 
-
-
-
     // scrematura
-    if(is_game || superstiti(giocatori, numero_giocatori) > 2) {
-        Elenco *nuov = scrematura(&giocatori[0], numero_giocatori);
+    if(!is_game) {
+        lista_scremata = scrematura(&giocatori[0], numero_giocatori);
+
+        // stanno iniziando a giocare, quindi aumento la statistica
+        for(i = 0; i < numero_giocatori; i++) {
+            if(is_player(giocatori[i])) {
+                giocatori[i].p->spr1d_game_giocati++;
+            }
+        }
+
+        svolgimento(giocatori, numero_giocatori, finale, nome_utente, &numero_profili, giocatori_veri, &numero_giocatori, &numero_giocatori_veri);
+
     } else {
-        printf("\n\n[%s]: Questa partita ha gia' svolto la scrematura iniziale", game_name());
+        printf("\n\n[%s]: Questa partita ha gia' svolto la scrematura iniziale\n\n", game_name());
+
+        // controlla quanti giocatori vivi / utente sono rimasti
+        superstiti(giocatori, numero_giocatori, controllo);
+
+
+
+        if(controllo[1] == 0) {
+            // finisci la partita con uno a caso
+            // controlla quanti ce ne sono rimasti
+            printf("[%s]: I giocatori rimasti sono tutti controllati dalla CPU!", game_name());
+            printf("[%s]: Dunque il vincitore verra' scelto a caso fra i sopravvissuti!", game_name());
+
+            do {
+                segnaposto = rand_int(0, numero_giocatori);
+            } while(!giocatori[segnaposto].vivo);
+
+            // Frontman dello Spr1d Game
+            for(i = 0; i < numero_giocatori; i++) {
+                if(frontman(giocatori[i])) {
+                    segnaposto = i;
+                    giocatori[i].p->spr1d_game_vinti++;
+                }
+            }
+
+            printf("\n\n\n\n\n[%s]: I GIOCHI SI CONCLUDONO, E IL VINCITORE E' %s!!!!!!!!!!\n\n", game_name(), print_player(giocatori[segnaposto]));
+
+            // aggiorna le statistiche del giocatore, se si tratta di un profilo utente
+            if(is_player(giocatori[segnaposto]) && !frontman(giocatori[segnaposto])) {
+                giocatori[segnaposto].p->spr1d_game_vinti++;
+            }
+
+            getchar();
+
+            free(giocatori);
+            free(giocatori_veri);
+            free(lista_scremata);
+            return 0;
+
+        } else if(controllo[0] == 2) {
+            // passa direttamente alla fase finale
+            // ottenendo prima la coppia rimanente
+
+            // cerca i 2 giocatori vivi e li mette nel duo finale, si ferma appena trova il secondo
+            i = 0, counter = 0;
+            while(!finito) {
+                if(giocatori[i].vivo) {
+                    finale[counter] = giocatori[i];
+                    counter++;
+                } else if(counter > 1) {
+                    finito = true;
+                }
+
+                i++;
+            }
+
+            // GIOCA A BLACKJACK CON LA COPPIA FINALE
+            winner = black_jack(finale);
+            printf("\n\n\n\n\n[%s]: I GIOCHI SI CONCLUDONO, E IL VINCITORE E' %s!!!!!!!!!!\n\n", game_name(), print_player(finale[winner]));
+
+        } else {
+            // avvia lo svolgimento e riducili a 2
+            // ottieni così di nuovo gli ultimi 2
+            lista_scremata = (Elenco *) malloc(sizeof(Elenco) * controllo[0]);
+            if(lista_scremata == NULL) {
+                printf("\nERRORE! Allocazione fallita!\n");
+                exit(-1);
+            }
+
+            // riempila con i giocatori vivi
+            i = 0, counter = 0;
+            while(i < numero_giocatori & counter < controllo[0]) {
+                if(giocatori[i].vivo) {
+                    lista_scremata[counter] = giocatori[i];
+                    counter++;
+                }
+
+                i++;
+            }
+
+            // SCRIVI FUNZIONE SVOLGIMENTO E METTILA QUI
+            svolgimento(giocatori, numero_giocatori, finale, nome_utente, &numero_profili, giocatori_veri, &numero_giocatori, &numero_giocatori_veri);
+        }
     }
-
-
-
-
-
-
 
 
     // svolgimento
 
 
 
-
     // finale
+    winner = black_jack(finale);
+
+    for(i = 0; i < 2; i++) {
+        if(frontman(finale[i])) {
+            winner = i;
+            giocatori[finale[(int)!(bool)i].id].vivo = false;
+            finale[i].p->spr1d_game_vinti++;
+        }
+    }
+
+    printf("\n[%s]: LA PARTITA SI CONCLUDE CON LA VITTORIA DI %s!!!!!!!!", game_name(), print_player(finale[winner]));
 
 
 
     free(giocatori);
     free(giocatori_veri);
+    free(lista_scremata);
 
 
     return 0;

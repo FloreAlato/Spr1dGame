@@ -40,7 +40,7 @@ void layout_indovina(Elenco *giocatori, int numero_giocatori, int turno, int min
     // 5 righe occupate
     if(turno <= numero_giocatori) {
         stampa_turno(giocatori, numero_giocatori, turno);
-        for(i = 16; i < PAGE_SIZE - 2; i++) {
+        for(i = 16; i < PAGE_SIZE - 3; i++) {
             printf("\n");
         }
     } else {

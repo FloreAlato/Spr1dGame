@@ -1,6 +1,8 @@
 CMakeFiles/davide_flore_66174.dir/main.c.obj: \
  C:\Users\Dando\Desktop\davide_flore_606166174\main.c \
+ C:\Users\Dando\Desktop\davide_flore_606166174\svolgimento.h \
  C:\Users\Dando\Desktop\davide_flore_606166174\scrematura.h \
+ C:\Users\Dando\Desktop\davide_flore_606166174\games.h \
  C:\Users\Dando\Desktop\davide_flore_606166174\indovina_il_numero.h \
  C:\Users\Dando\Desktop\davide_flore_606166174\murra.h \
  C:\Users\Dando\Desktop\davide_flore_606166174\tris.h \

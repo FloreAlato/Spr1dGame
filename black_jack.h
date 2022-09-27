@@ -34,7 +34,7 @@ int step = 8;
 
 
 int black_jack(Elenco *);
-void layout_black(int, carta **, int[2], Elenco *, int[2]);
+void layout_black(carta **, int[2], Elenco *, int[2], bool);
 void stampa_carta(carta *, int, int);
 void recursione(carta *, int, int);
 void stampa_vuota();
@@ -43,7 +43,7 @@ void stampa_vuota();
 
 
 
-void layout_black(int page_size, carta **mazzi, int dim[2], Elenco *giocatori, int punteggio[2]) {
+void layout_black(carta **mazzi, int dim[2], Elenco *giocatori, int punteggio[2], bool vittoria) {
 
     int i, j;
 
@@ -57,22 +57,21 @@ void layout_black(int page_size, carta **mazzi, int dim[2], Elenco *giocatori, i
 
         if(mazzi[j] == NULL || dim[j] == 0) {
             stampa_vuota();
-
-            for(i = 0; i < 5; i++) {
-                printf("\n");
-            }
         } else {
             recursione(&mazzi[j][0], 0, dim[j]);
-
-            if(dim[j] <= step) {
-                for(i = 0; i < 5; i++) {
-                    printf("\n");
-                }
-            }
         }
+
+        printf("\n");
     }
 
-
+    if(vittoria) {
+        // vinci
+        printf("\n\n\n\n[%s]: VITTORIA!!!! FINE DELLA PARTITA!!!\n\n\n", game_name());
+    } else {
+        for(i = 16; i < PAGE_SIZE- 2; i++) {
+            printf("\n");
+        }
+    }
 }
 
 
@@ -89,6 +88,8 @@ int black_jack(Elenco *finalisti) {
 
     int deck_size = 52, segnaposto;
     int end = 3;
+    int risposta;
+    bool ripeti = false;
 
 
     // genera il mazzo
@@ -108,13 +109,13 @@ int black_jack(Elenco *finalisti) {
         }
     }
 
-
     carta **mazzi = NULL;
     mazzi = (carta **) calloc(2, sizeof(carta *));
     if(mazzi == NULL) {
         printf("ERRORE! Allocazione fallita!");
         exit(-1);
     }
+
 
     // partono con dimenzione 2
     mazzi[0] = (carta *) malloc(sizeof(carta) * dim[0]);
@@ -123,9 +124,6 @@ int black_jack(Elenco *finalisti) {
         printf("ERRORE! Allocazione fallita!");
         exit(-1);
     }
-
-
-    // rifare da capo (idiota)
 
     // riempi a caso le prime due carte
     for(i = 0; i < 2; i++) {
@@ -151,22 +149,27 @@ int black_jack(Elenco *finalisti) {
     while(continua[0] == true || continua[1] == true) {
         for(i = 0; i < 2; i++) {
 
-            layout_black(25, mazzi, dim, finalisti, punti);
+            layout_black(mazzi, dim, finalisti, punti, false);
 
 
             if(continua[i]) {
                 if(is_player(finalisti[i])) {
 
                     // turno giocatore
-                    printf("Vuoi chiedere un'altra carta? (si / no)\n[%s]: ", print_player(finalisti[i]));
-                    scelta = si_no("");
+                    printf("[%s]: Vuoi chiedere un'altra carta? (si / no)\n[%s]", game_name(), print_player(finalisti[i]));
+                    scelta = si_no(": ");
                     getchar();
 
                 } else {
 
                     // turno non giocatore
                     // rivedere
-                    scelta = rand_int(0, 1);
+                    //scelta = rand_int(0, 1);
+                    if(21 - punti[i] > 5) {
+                        scelta = 1;
+                    } else {
+                        scelta = 0;
+                    }
 
                     if(scelta) {
                         printf("\n[%s]: Dammene un'altra!", print_player(finalisti[i]));
@@ -188,12 +191,26 @@ int black_jack(Elenco *finalisti) {
                     deck_size--;
 
                     // aggiorna il punteggio
-                    if(mazzi[i][dim[i] - 1].valore == 1) {
+                    if(mazzi[i][dim[i] - 1].valore == 1 && is_player(finalisti[i])) {
 
                         // vedere se l'utente vuole
-                        layout_black(25, mazzi, dim, finalisti, punti);
-                        printf("\nChe valore vuoi che abbia questo asso?\n[%s]: ", print_player(finalisti[i]));
+                        layout_black(mazzi, dim, finalisti, punti, false);
+                        printf("\n[%s]: Che valore vuoi che abbia questo asso? (1 / 11)\n[%s]", game_name(), print_player(finalisti[i]));
 
+                        do {
+                            risposta = get_int(": ", 1, 11);
+
+                            if(risposta == 1) {
+                                punti[i] += 1;
+                            } else if(risposta == 11) {
+                                punti[i] += 11;
+                            } else {
+                                printf("\n[%s]: Errore! puoi scegliere solo 1 o 11", game_name());
+                            }
+                        } while(risposta != 1 && risposta != 11);
+
+
+                    } else if(mazzi[i][dim[i] - 1].valore == 1) {
                         punti[i] += 11;
                     } else if(mazzi[i][dim[i] - 1].valore > 10) {
                         punti[i] += 10;
@@ -207,12 +224,17 @@ int black_jack(Elenco *finalisti) {
 
                 // controlla che il punteggio non ecceda il massimo
                 if(punti[i] > 21) {
-                    //end = not(i);
+                    end = (int)!(bool)i;
                     continua[i] = false;
-                    //continua[not(i)] = false;
+                    continua[(int)!(bool)i] = false;
                 }
             }
         }
+
+        // mostra schermata di vittoria
+        layout_black(mazzi, dim, finalisti, punti, true);
+        printf("\n[%s]: %s si aggiudica la partita!", game_name(), print_player(finalisti[(int)!(bool)i]));
+
     }
 
     // punti

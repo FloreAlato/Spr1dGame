@@ -265,18 +265,19 @@ bool frontman(Elenco gruppo) {
 
 
 
+// ritorna 0 se sono tutti CPU, 1 se sono rimasti in 2, altrimenti i superstiti
+void superstiti(Elenco *gruppo, int dim, int *valori) {
 
-int superstiti(Elenco *gruppo, int dim) {
-
-    int quanti = 0, i;
+    int i;
 
     for(i = 0; i < dim; i++) {
         if(gruppo[i].vivo) {
-            quanti++;
+            valori[0]++;
+        }
+        if(is_player(gruppo[i])) {
+            valori[1]++;
         }
     }
-
-    return quanti;
 }
 
 

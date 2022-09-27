@@ -8,7 +8,7 @@
 #endif //DAVIDE_FLORE_66174_SCREMATURA_H
 
 
-#include "indovina_il_numero.h"
+#include "games.h"
 
 
 
@@ -68,7 +68,8 @@ Elenco *scrematura(Elenco *participants, int totale) {
         i++;
     }
     target = potenza(2, i - 2);
-    printf("\n\n\n[%s]: Troppi! Facciamo %d?", game_name(), target);
+    printf("\n\n\n[%s]: Troppi! Facciamo %d? (invio)", game_name(), target);
+    getchar();
 
     // dividi in gruppetti
     group_size = totale / target;
@@ -179,6 +180,9 @@ Elenco *scrematura(Elenco *participants, int totale) {
                 if(frontman(groups[i][j])) {
                     winner = j;
                 }
+                if(is_player(groups[i][j])) {
+                    groups[i][j].p->giochi_giocati++;
+                }
             }
 
             // vincitore
@@ -187,14 +191,21 @@ Elenco *scrematura(Elenco *participants, int totale) {
             // aggiorna le statistiche del giocatore
             if(is_player(nuovo[i])) {
                 nuovo[i] = groups[i][winner];
-                nuovo[i].p->giochi_giocati++;
                 nuovo[i].p->giochi_vinti++;
             }
 
         } else if(!pla[i] || i == target - 1) {
             // scegli il vincitore a caso
-            nuovo[i] = groups[i][rand_int(0, dim)];
+            winner = rand_int(0, dim);
+            nuovo[i] = groups[i][winner];
             printf("\n[%s]: Il %do gruppo ha giocato e ha vinto %s", game_name(), i + 1, print_player(nuovo[i]));
+        }
+
+        // uccidi tutti i perdenti
+        for(k = 0; k < dim; k++) {
+            if(k != winner) {
+                participants[groups[i][k].id].vivo = false;
+            }
         }
     }
 

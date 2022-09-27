@@ -84,6 +84,9 @@
 		<Unit filename="C:/Users/Dando/Desktop/davide_flore_606166174/file.h">
 			<Option target="davide_flore_66174"/>
 		</Unit>
+		<Unit filename="C:/Users/Dando/Desktop/davide_flore_606166174/games.h">
+			<Option target="davide_flore_66174"/>
+		</Unit>
 		<Unit filename="C:/Users/Dando/Desktop/davide_flore_606166174/indovina_il_numero.h">
 			<Option target="davide_flore_66174"/>
 		</Unit>
@@ -100,6 +103,9 @@
 			<Option target="davide_flore_66174"/>
 		</Unit>
 		<Unit filename="C:/Users/Dando/Desktop/davide_flore_606166174/scrematura.h">
+			<Option target="davide_flore_66174"/>
+		</Unit>
+		<Unit filename="C:/Users/Dando/Desktop/davide_flore_606166174/svolgimento.h">
 			<Option target="davide_flore_66174"/>
 		</Unit>
 		<Unit filename="C:/Users/Dando/Desktop/davide_flore_606166174/tris.h">

@@ -8,6 +8,16 @@
 MIGLIORARE LA SCHERMATA DI VITTORIA DI INDOVINA IL NUMERO
 
 
+. Scrivere la funzione svolgimento, per ridurre qualunque array a una coppia
+. usarla in ogni caso, anche da file caricati
+. scrivere la funzione per salvare un file di gioco o senza
+. unire il tutto, poi si vede
+
+
+
+
+
+
 
 
 

@@ -127,15 +127,30 @@ char **trova_nomi(FILE *file, int numero) {
 
 
 
-void save(int *profili, ProfiloGiocatore *players, bool *game, char *filename) {
+void save(int *numero_profili, ProfiloGiocatore *players, bool *game, char *filename, int *numero_giocatori, int *numero_giocatori_veri, Elenco *gamers) {
 
+    int i;
     FILE *file = NULL;
 
     file = fopen_secure(make_path(filename, ".bin"), "wb");
 
-    fwrite(profili, sizeof(int), 1, file);
-    scrivi_giocatori(file, *profili, players);
+    fwrite(numero_profili, sizeof(int), 1, file);
+    scrivi_giocatori(file, *numero_profili, players);
     fwrite(game, sizeof(int), 1, file);
+
+    if(game) {
+        // resto
+        fwrite(numero_giocatori, sizeof(int), 1, file);
+        fwrite(numero_giocatori_veri, sizeof(int), 1, file);
+        for(i = 0; i < *numero_giocatori_veri; i++) {
+            if(players[i].index >= 0) {
+                fwrite(&players[i].index, sizeof(int), 1, file);
+            }
+        }
+        for(i = 0; i < *numero_giocatori; i++) {
+            fwrite(&gamers[i].vivo, sizeof(int), 1, file);
+        }
+    }
 
     fclose(file);
 }
