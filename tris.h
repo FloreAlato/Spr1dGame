@@ -144,7 +144,7 @@ void stampa_tabella() {
 
 
 
-void layout_tris(Elenco *giocatori, int turno) {
+void layout_tris(Elenco *players, int turno) {
 
     int i;
 
@@ -152,13 +152,13 @@ void layout_tris(Elenco *giocatori, int turno) {
     printf("--------[STAI GIOCANDO A BLACKJACK]--------\n\n");
 
     // stampa tabella (5 righe occupate)
-    stampa_tabella(tavola);
+    stampa_tabella();
 
     // 2 righe occupate
     printf("\n\n");
 
     // 4 righe occupate
-    stampa_turno(giocatori, 2, turno);
+    stampa_turno(players, 2, turno);
 
     // 14 in totale
 
@@ -171,7 +171,7 @@ void layout_tris(Elenco *giocatori, int turno) {
 
 
 
-void stampa_turno(Elenco *giocatori, int num, int turno) {
+void stampa_turno(Elenco *players, int num, int turno) {
 
     int i, j;
 
@@ -184,18 +184,18 @@ void stampa_turno(Elenco *giocatori, int num, int turno) {
             printf(" ");
         }
 
-        printf("%s ", print_player(giocatori[i]));
+        printf("%s ", print_player(players[i]));
     }
     printf("\n");
 
     for(i = 0; i < num; i++) {
         if(i == turno) {
             printf("|");
-            for(j = 0; j < strlen(print_player(giocatori[i])); j++) {
+            for(j = 0; j < strlen(print_player(players[i])); j++) {
                 printf("_");
             }
         } else {
-            for(j = 0; j <= strlen(print_player(giocatori[i])); j++) {
+            for(j = 0; j <= strlen(print_player(players[i])); j++) {
                 printf(" ");
             }
             printf(" ");
@@ -274,7 +274,7 @@ void tris_bot(int *coordinate, int turno) {
 
 
 
-bool check_tris(int *coord, char sign) {
+bool check_tris(const int *coord, char sign) {
 
     if(tavola[coord[0]][coord[1]] == sign) {
         return true;
