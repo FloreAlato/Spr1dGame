@@ -25,7 +25,7 @@ void stampa_ricorsiva(Elenco **, int, int, int);
 
 
 
-
+// step per la stampa ricorsiva dei gruppetti
 int step_stampa = 5;
 
 
@@ -35,7 +35,8 @@ int step_stampa = 5;
 
 
 
-
+// funzione che esegue la scrematura dell'array principale di utenti
+// prende l'Elenco principale, le sue dimensioni e le dimesioni desiderate, e restituisce il nuovo elenco scremato
 Elenco *scrematura(Elenco *participants, int totale, int *target) {
 
     int i = 0, j, k, counter;
@@ -52,9 +53,7 @@ Elenco *scrematura(Elenco *participants, int totale, int *target) {
 
     // ELENCO PROVVISORIO PER RIEMPIRE
 
-
-
-    // nuovo elenco
+    // come già visto in passato, un array provvisorio per riempire
     nuovo = (Elenco *) calloc(totale, sizeof(Elenco));
     if(nuovo == NULL) {
         printf("\n\nERRORE! Allocazione fallita!\n\n");
@@ -65,7 +64,8 @@ Elenco *scrematura(Elenco *participants, int totale, int *target) {
     }
 
 
-    // ottiene il numero desiderato di giocatori
+    // ottiene il numero desiderato di giocatori e lo salva nel puntatore in input
+    // poi avvisa l'utente
     while(potenza(2, i) < totale) {
         i++;
     }
@@ -73,7 +73,7 @@ Elenco *scrematura(Elenco *participants, int totale, int *target) {
     printf("\n\n\n[%s]: Troppi! Facciamo %d? (invio)", game_name(), *target);
     getchar();
 
-    // dividi in gruppetti
+    // ottiene il numero di gruppetti
     group_size = totale / *target;
 
     // alloca i gruppetti
@@ -82,6 +82,7 @@ Elenco *scrematura(Elenco *participants, int totale, int *target) {
         printf("\n\nERRORE! Allocazione fallita!");
         exit(-1);
     }
+    // riempie i gruppetti
     for(i = 0; i < *target; i++) {
         groups[i] = (Elenco *) calloc(group_size + 1, sizeof(Elenco));
         if(groups[i] == NULL) {
@@ -91,7 +92,7 @@ Elenco *scrematura(Elenco *participants, int totale, int *target) {
     }
 
 
-    // riempie l'array pla
+    // alloca e azzrera l'array di booleani che indica se ogni gruppetto contiene o meno un giocatore utente
     pla = (bool *) calloc(*target, sizeof(bool));
     if(pla == NULL) {
         printf("\n\nERRORE! Allocazione fallita!\n\n");
@@ -106,9 +107,9 @@ Elenco *scrematura(Elenco *participants, int totale, int *target) {
     // RIEMPIE I GRUPPETTI IN MODO CASUALE
 
 
-
-
     // riempie i gruppetti randomizzando
+    // usa lo stesso metodo visto in precedenza, dove gli elementi sono scelti a caso da una lista che si restringe ogni vola
+    // inoltre inizializza a -1 l'id dei posti vuoti di ogni gruppo, si vedrà più avanti l'utilità di ciò
     counter = totale - 1;
     for(i = 0; i <= group_size; i++) {
         for(j = 0; j < *target; j++, counter--) {
@@ -116,7 +117,7 @@ Elenco *scrematura(Elenco *participants, int totale, int *target) {
                 segnaposto = rand_int(0, counter);
                 groups[j][i] = nuovo[segnaposto];
 
-                // salva i gruppi che contengono giocatori
+                // salva i gruppi che contengono giocatori nell'array pla
                 if(is_player(groups[j][i])) {
                     pla[j] = true;
                 }
@@ -130,7 +131,8 @@ Elenco *scrematura(Elenco *participants, int totale, int *target) {
 
 
 
-    // stampa i gruppetti in modo ordinato
+    // stampa i gruppetti in modo ordinato usando stampa_ricorsiva()
+    // questa funzione è il mio orgoglio
     printf("\n\n\n");
     stampa_ricorsiva(groups, group_size, 0, *target);
     getchar();
@@ -142,12 +144,9 @@ Elenco *scrematura(Elenco *participants, int totale, int *target) {
 
 
 
-    // RIVEDI TUTTA QUESTA PARTE
 
 
-
-
-    // rialloca elenco
+    // rialloca l'elenco provvisorio per risparmiare caratteri
     nuovo = (Elenco *) realloc(nuovo, sizeof(Elenco) * *target);
     if(nuovo == NULL) {
         printf("\n\nERRORE! Rillocazione fallita!\n\n");
@@ -155,10 +154,10 @@ Elenco *scrematura(Elenco *participants, int totale, int *target) {
     }
 
 
-    // SCORRI IL GRUPPO E GIOCA
-    // l'ultimo elemento dei gruppi piccoli ha id -1
+    // scorre il gruppo e gioca per ridurre i giocatori vivi
     for(i = 0; i < *target; i++) {
 
+        // ricava le dimensioni dei gruppetti grazie all'id dell'ultima posizione
         if(groups[i][group_size].id == -1) {
             dim = group_size - 1;
         } else {
@@ -166,44 +165,51 @@ Elenco *scrematura(Elenco *participants, int totale, int *target) {
         }
 
 
-        // controlla che ci siano giocatori e agisci di conseguenza
+        // controlla che ci siano giocatori
+        // se ne trova, ottiene il vincitore tramite una partita a indovina_il_numero()
+        // altrimenti lo sceglie a caso
+        // indovina_il_numero() -> indovina_il_numero.h
         if(pla[i]) {
-            // gioca
             printf("\n\n[%s]: Il %do gruppo contiene un giocatore", game_name(), i + 1);
             printf("\n[%s]: Giochiamo a Indovina il Numero!! (invio)", game_name());
             getchar();
 
             // GIOCA A INDOVINA IL NUMERO
-
             winner = indovina_il_numero(groups[i], dim + 1);
 
-            // FRONTMAN DELLO SPR1D GAME
-            for(j = 0; j < dim; j++) {
-                if(frontman(groups[i][j])) {
-                    winner = j;
-                }
-                if(is_player(groups[i][j])) {
-                    groups[i][j].p->giochi_giocati++;
-                }
-            }
-
-            // vincitore
+            // stampa il vincitore
             printf("\nVINCE %s", print_player(groups[i][winner]));
 
-            // aggiorna le statistiche del giocatore
+            // aggiorna le statistiche del giocatore vincente (se ha un profilo)
             if(is_player(nuovo[i])) {
                 nuovo[i] = groups[i][winner];
                 nuovo[i].p->giochi_vinti++;
             }
 
         } else if(!pla[i] || i == *target - 1) {
-            // scegli il vincitore a caso
+            // se il gruppetto non dovesse contenere un utente, il programma sceglie il vincitore a caso
             winner = rand_int(0, dim);
-            nuovo[i] = groups[i][winner];
-            printf("\n[%s]: Il %do gruppo ha giocato e ha vinto %s", game_name(), i + 1, print_player(nuovo[i]));
         }
 
-        // uccidi tutti i perdenti e aumenta le statistiche dei profili giocatore
+        // FRONTMAN DELLO SPR1D GAME
+        // se il gruppetto contiene un giocatore utente di nome Riccardo Scateni, lo fa vincere
+        // lo trova con la funzione frontman()
+        // frontman() -> main.h
+        for(j = 0; j < dim; j++) {
+            if(frontman(groups[i][j])) {
+                winner = j;
+            }
+            if(is_player(groups[i][j])) {
+                groups[i][j].p->giochi_giocati++;
+            }
+        }
+
+        // salva il vincitore e lo stampa
+        nuovo[i] = groups[i][winner];
+        printf("\n[%s]: Il %do gruppo ha giocato e ha vinto %s", game_name(), i + 1, print_player(nuovo[i]));
+
+
+        // uccide tutti i perdenti e aumenta le statistiche dei profili giocatore
         for(k = 0; k < dim; k++) {
             if(k != winner) {
                 participants[groups[i][k].id].vivo = false;

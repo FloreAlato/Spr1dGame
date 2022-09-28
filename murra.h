@@ -11,13 +11,12 @@
 #include "tris.h"
 
 
-int murra(Elenco *);
 
 
 
 
-
-
+// gioco della murra
+// prende in input una coppia e restituisce l'indice del vincitore nella coppia stessa
 int murra(Elenco *coppia) {
 
     int i;
@@ -26,7 +25,9 @@ int murra(Elenco *coppia) {
     int somma[2];
 
 
+    // stampa un messaggio di inizio gioco
     printf("[%s]: GIOCHIAMO A MURRA!!!\n\n\n", game_name());
+
 
     do {
         scelta[0] = 0;

@@ -3,6 +3,7 @@ CMakeFiles/davide_flore_66174.dir/main.c.obj: \
  C:\Users\Dando\Desktop\davide_flore_606166174\svolgimento.h \
  C:\Users\Dando\Desktop\davide_flore_606166174\scrematura.h \
  C:\Users\Dando\Desktop\davide_flore_606166174\indovina_il_numero.h \
+ C:\Users\Dando\Desktop\davide_flore_606166174\pari_o_dispari.h \
  C:\Users\Dando\Desktop\davide_flore_606166174\murra.h \
  C:\Users\Dando\Desktop\davide_flore_606166174\tris.h \
  C:\Users\Dando\Desktop\davide_flore_606166174\black_jack.h \
