@@ -127,28 +127,29 @@ char **trova_nomi(FILE *file, int numero) {
 
 
 
-void save(int *numero_profili, ProfiloGiocatore *players, bool *game, char *filename, int *numero_giocatori, int *numero_giocatori_veri, Elenco *gamers) {
+// RIVEDERE
+void save(bool *game, char *filename) {
 
     int i;
     FILE *file = NULL;
 
     file = fopen_secure(make_path(filename, ".bin"), "wb");
 
-    fwrite(numero_profili, sizeof(int), 1, file);
-    scrivi_giocatori(file, *numero_profili, players);
+    fwrite(&numero_giocatori_veri, sizeof(int), 1, file);
+    scrivi_giocatori(file, numero_giocatori_veri, giocatori_veri);
     fwrite(game, sizeof(int), 1, file);
 
     if(game) {
         // resto
-        fwrite(numero_giocatori, sizeof(int), 1, file);
-        fwrite(numero_giocatori_veri, sizeof(int), 1, file);
-        for(i = 0; i < *numero_giocatori_veri; i++) {
-            if(players[i].index >= 0) {
-                fwrite(&players[i].index, sizeof(int), 1, file);
+        fwrite(&numero_giocatori, sizeof(int), 1, file);
+        fwrite(&numero_giocatori_veri, sizeof(int), 1, file);
+        for(i = 0; i < numero_giocatori_veri; i++) {
+            if(giocatori_veri[i].index >= 0) {
+                fwrite(&giocatori_veri[i].index, sizeof(int), 1, file);
             }
         }
-        for(i = 0; i < *numero_giocatori; i++) {
-            fwrite(&gamers[i].vivo, sizeof(int), 1, file);
+        for(i = 0; i < numero_giocatori; i++) {
+            fwrite(&giocatori[i].vivo, sizeof(int), 1, file);
         }
     }
 

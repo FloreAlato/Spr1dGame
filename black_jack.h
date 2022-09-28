@@ -145,14 +145,15 @@ int black_jack(Elenco *finalisti) {
 
     // COMINCIA LA PARTITA
 
-    // mostra il tavolo
+
     while(continua[0] == true || continua[1] == true) {
         for(i = 0; i < 2; i++) {
 
-            layout_black(mazzi, dim, finalisti, punti, false);
-
-
             if(continua[i]) {
+
+                layout_black(mazzi, dim, finalisti, punti, false);
+
+
                 if(is_player(finalisti[i])) {
 
                     // turno giocatore
@@ -165,16 +166,13 @@ int black_jack(Elenco *finalisti) {
                     // turno non giocatore
                     // rivedere
                     //scelta = rand_int(0, 1);
-                    if(21 - punti[i] > 5) {
+                    if(21 - punti[i] > 3) {
                         scelta = 1;
+                        printf("[%s]: Vuoi chiedere un'altra carta?\n[%s]: Dammene un'altra!" , game_name(), print_player(finalisti[i]));
                     } else {
                         scelta = 0;
-                    }
-
-                    if(scelta) {
-                        printf("\n[%s]: Dammene un'altra!", print_player(finalisti[i]));
-                    } else {
-                        printf("\n[%s]: Per me e' tutto!", print_player(finalisti[i]));
+                        printf("[%s]: Vuoi chiedere un'altra carta?\n[%s]: Per me e' tutto!" , game_name(), print_player(finalisti[i]));
+                        continua[i] = false;
                     }
 
                     getchar();
@@ -224,20 +222,24 @@ int black_jack(Elenco *finalisti) {
 
                 // controlla che il punteggio non ecceda il massimo
                 if(punti[i] > 21) {
-                    end = (int)!(bool)i;
-                    continua[i] = false;
-                    continua[(int)!(bool)i] = false;
+                    if(i == 0) {
+                        end = 1;
+                    } else {
+                        end = 0;
+                    }
+                    continua[0] = false;
+                    continua[1] = false;
                 }
             }
         }
 
-        // mostra schermata di vittoria
-        layout_black(mazzi, dim, finalisti, punti, true);
-        printf("\n[%s]: %s si aggiudica la partita!", game_name(), print_player(finalisti[(int)!(bool)i]));
-
     }
 
     // punti
+    // mostra schermata di vittoria
+    layout_black(mazzi, dim, finalisti, punti, true);
+    printf("\n[%s]: %d si aggiudica la partita!", game_name(), end);
+    getchar();
 
 
 

@@ -13,8 +13,6 @@
 #include <string.h>
 #include <time.h>
 
-#include "letters.h"
-
 
 #define PAGE_SIZE 25
 
@@ -35,6 +33,17 @@ typedef struct {
     bool vivo;
     ProfiloGiocatore *p;
 } Elenco;
+
+
+
+
+
+
+int numero_giocatori = 0, numero_giocatori_veri = 0, superstiti_scrematura = 0;
+Elenco *giocatori = NULL;
+ProfiloGiocatore *giocatori_veri;
+
+char nome_utente[32] = "Tu";
 
 
 
@@ -230,18 +239,18 @@ char *print_player(Elenco player) {
 
 
 
-Elenco *componi_elenco(int numero_giocatori) {
+Elenco *componi_elenco(int dim) {
 
     int i;
     Elenco *players = NULL;
 
-    players = (Elenco *) calloc(numero_giocatori, sizeof(Elenco));
+    players = (Elenco *) calloc(dim, sizeof(Elenco));
     if(players == NULL) {
         printf("\n\nERRORE! Allocazione fallita!\n\n");
         exit(-1);
     }
 
-    for(i = 0; i < numero_giocatori; i++) {
+    for(i = 0; i < dim; i++) {
         players[i].id = i;
         players[i].p = NULL;
         players[i].vivo = true;
@@ -253,9 +262,9 @@ Elenco *componi_elenco(int numero_giocatori) {
 
 
 
-bool frontman(Elenco gruppo) {
+bool frontman(Elenco giocatore) {
 
-    if(is_player(gruppo) && strcmp(gruppo.p->nome, "Riccardo Scateni") == 0) {
+    if(is_player(giocatore) && strcmp(giocatore.p->nome, "Riccardo Scateni") == 0) {
         return true;
     }
 
@@ -274,9 +283,28 @@ void superstiti(Elenco *gruppo, int dim, int *valori) {
         if(gruppo[i].vivo) {
             valori[0]++;
         }
-        if(is_player(gruppo[i])) {
+        if(gruppo[i].vivo && is_player(gruppo[i])) {
             valori[1]++;
         }
+    }
+}
+
+
+
+
+
+void solo_vivi(Elenco *destinazione, int totali, int vivi) {
+
+    int i = 0, counter = 0;
+
+    while(i < totali || counter < vivi) {
+
+        if(giocatori[i].vivo) {
+            destinazione[counter] = giocatori[i];
+            counter++;
+        }
+
+        i++;
     }
 }
 

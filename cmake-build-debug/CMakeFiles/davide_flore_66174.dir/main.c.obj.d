@@ -2,7 +2,6 @@ CMakeFiles/davide_flore_66174.dir/main.c.obj: \
  C:\Users\Dando\Desktop\davide_flore_606166174\main.c \
  C:\Users\Dando\Desktop\davide_flore_606166174\svolgimento.h \
  C:\Users\Dando\Desktop\davide_flore_606166174\scrematura.h \
- C:\Users\Dando\Desktop\davide_flore_606166174\games.h \
  C:\Users\Dando\Desktop\davide_flore_606166174\indovina_il_numero.h \
  C:\Users\Dando\Desktop\davide_flore_606166174\murra.h \
  C:\Users\Dando\Desktop\davide_flore_606166174\tris.h \
@@ -37,5 +36,4 @@ CMakeFiles/davide_flore_66174.dir/main.c.obj: \
  C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/x86_64-w64-mingw32/include/_timeval.h \
  C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/x86_64-w64-mingw32/include/sys/timeb.h \
  C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/x86_64-w64-mingw32/include/sec_api/sys/timeb_s.h \
- C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/x86_64-w64-mingw32/include/pthread_time.h \
- C:\Users\Dando\Desktop\davide_flore_606166174\letters.h
+ C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/x86_64-w64-mingw32/include/pthread_time.h

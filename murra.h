@@ -103,7 +103,7 @@ void layout_murra(Elenco *giocatori, int turno, int numeri[2]) {
     // 7 righe occupate
     // rivedere, cambiare gli spazi
     printf("[%s] HA BUTTATO:       [%s] HA BUTTATO:\n", print_player(giocatori[0]), print_player(giocatori[1]));
-    print_num(numeri, 2);
+    //print_num(numeri, 2);
 
 
 

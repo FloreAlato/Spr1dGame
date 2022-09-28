@@ -8,11 +8,11 @@
 #endif //DAVIDE_FLORE_66174_SCREMATURA_H
 
 
-#include "games.h"
+#include "indovina_il_numero.h"
 
 
 
-Elenco *scrematura(Elenco *, int);
+Elenco *scrematura(Elenco *, int, int *);
 void stampa_gruppetti(Elenco **, int, int, int);
 void stampa_ricorsiva(Elenco **, int, int, int);
 
@@ -36,15 +36,17 @@ int step_stampa = 5;
 
 
 
-Elenco *scrematura(Elenco *participants, int totale) {
+Elenco *scrematura(Elenco *participants, int totale, int *target) {
 
     int i = 0, j, k, counter;
-    int target, group_size, segnaposto, dim, winner;
-    bool trovato = false;
+    int group_size, segnaposto, dim, winner;
 
     Elenco *nuovo = NULL;
     Elenco **groups = NULL;
     bool *pla = NULL;
+
+    bool scelta, game;
+    char filename[32];
 
 
 
@@ -67,20 +69,20 @@ Elenco *scrematura(Elenco *participants, int totale) {
     while(potenza(2, i) < totale) {
         i++;
     }
-    target = potenza(2, i - 2);
-    printf("\n\n\n[%s]: Troppi! Facciamo %d? (invio)", game_name(), target);
+    *target = potenza(2, i - 2);
+    printf("\n\n\n[%s]: Troppi! Facciamo %d? (invio)", game_name(), *target);
     getchar();
 
     // dividi in gruppetti
-    group_size = totale / target;
+    group_size = totale / *target;
 
     // alloca i gruppetti
-    groups = (Elenco **) calloc(target, sizeof(Elenco *));
+    groups = (Elenco **) calloc(*target, sizeof(Elenco *));
     if(groups == NULL) {
         printf("\n\nERRORE! Allocazione fallita!");
         exit(-1);
     }
-    for(i = 0; i < target; i++) {
+    for(i = 0; i < *target; i++) {
         groups[i] = (Elenco *) calloc(group_size + 1, sizeof(Elenco));
         if(groups[i] == NULL) {
             printf("\n\nERRORE! Allocazione fallita!");
@@ -90,12 +92,12 @@ Elenco *scrematura(Elenco *participants, int totale) {
 
 
     // riempie l'array pla
-    pla = (bool *) calloc(target, sizeof(bool));
+    pla = (bool *) calloc(*target, sizeof(bool));
     if(pla == NULL) {
         printf("\n\nERRORE! Allocazione fallita!\n\n");
         exit(-1);
     }
-    for(i = 0; i < target; i++) {
+    for(i = 0; i < *target; i++) {
         pla[i] = false;
     }
 
@@ -109,7 +111,7 @@ Elenco *scrematura(Elenco *participants, int totale) {
     // riempie i gruppetti randomizzando
     counter = totale - 1;
     for(i = 0; i <= group_size; i++) {
-        for(j = 0; j < target; j++, counter--) {
+        for(j = 0; j < *target; j++, counter--) {
             if(counter >= 0) {
                 segnaposto = rand_int(0, counter);
                 groups[j][i] = nuovo[segnaposto];
@@ -130,7 +132,7 @@ Elenco *scrematura(Elenco *participants, int totale) {
 
     // stampa i gruppetti in modo ordinato
     printf("\n\n\n");
-    stampa_ricorsiva(groups, group_size, 0, target);
+    stampa_ricorsiva(groups, group_size, 0, *target);
     getchar();
 
     printf("\n\n");
@@ -146,7 +148,7 @@ Elenco *scrematura(Elenco *participants, int totale) {
 
 
     // rialloca elenco
-    nuovo = (Elenco *) realloc(nuovo, sizeof(Elenco) * target);
+    nuovo = (Elenco *) realloc(nuovo, sizeof(Elenco) * *target);
     if(nuovo == NULL) {
         printf("\n\nERRORE! Rillocazione fallita!\n\n");
         exit(-1);
@@ -155,7 +157,7 @@ Elenco *scrematura(Elenco *participants, int totale) {
 
     // SCORRI IL GRUPPO E GIOCA
     // l'ultimo elemento dei gruppi piccoli ha id -1
-    for(i = 0; i < target; i++) {
+    for(i = 0; i < *target; i++) {
 
         if(groups[i][group_size].id == -1) {
             dim = group_size - 1;
@@ -175,7 +177,7 @@ Elenco *scrematura(Elenco *participants, int totale) {
 
             winner = indovina_il_numero(groups[i], dim + 1);
 
-            // FRONTMAN DELLO SPR1D_GAME
+            // FRONTMAN DELLO SPR1D GAME
             for(j = 0; j < dim; j++) {
                 if(frontman(groups[i][j])) {
                     winner = j;
@@ -194,17 +196,48 @@ Elenco *scrematura(Elenco *participants, int totale) {
                 nuovo[i].p->giochi_vinti++;
             }
 
-        } else if(!pla[i] || i == target - 1) {
+        } else if(!pla[i] || i == *target - 1) {
             // scegli il vincitore a caso
             winner = rand_int(0, dim);
             nuovo[i] = groups[i][winner];
             printf("\n[%s]: Il %do gruppo ha giocato e ha vinto %s", game_name(), i + 1, print_player(nuovo[i]));
         }
 
-        // uccidi tutti i perdenti
+        // uccidi tutti i perdenti e aumenta le statistiche dei profili giocatore
         for(k = 0; k < dim; k++) {
             if(k != winner) {
                 participants[groups[i][k].id].vivo = false;
+            }
+            if(is_player(participants[groups[i][k].id])) {
+                participants[groups[i][k].id].p->giochi_giocati++;
+            }
+        }
+
+        // SALVA IN UN FILE SENZA GIOCO
+        // solo se la partita è stata giocata dall'utente
+        if(pla[i]) {
+            printf("\n[%s]: Vuoi salvare la partita? (si / no)\n[%s]", game_name(), nome_utente);
+            scelta = (bool)si_no(": ");
+
+            if(scelta) {
+                printf("\n[%s]: Come vuoi chiamare il file di salvataggio? (ATTENZIONE, SE SCEGLI IL NOME DI UN FILE ESISTENTE, QUESTO VERRA' SOVRASCRITTO!)", game_name());
+                scanf(" %s", filename);
+
+                game = false;
+                save(&game, filename);
+                add_file(filename);
+
+                printf("\n[%s]: Vuoi continuare a giocare? (si / no)\n[%s]", game_name(), nome_utente);
+                scelta = (bool)si_no(": ");
+
+                if(!scelta) {
+                    printf("[%s]: D'accordo, alla prossima!", game_name());
+                    exit(0);
+                }
+
+            } else {
+                printf("\n[%s]: Bene, allora continuiamo (invio)\n", game_name());
+                getchar();
             }
         }
     }

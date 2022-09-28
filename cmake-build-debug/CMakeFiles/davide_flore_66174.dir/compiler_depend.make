@@ -4,7 +4,6 @@
 CMakeFiles/davide_flore_66174.dir/main.c.obj: ../main.c \
   ../svolgimento.h \
   ../scrematura.h \
-  ../games.h \
   ../indovina_il_numero.h \
   ../murra.h \
   ../tris.h \
@@ -39,15 +38,12 @@ CMakeFiles/davide_flore_66174.dir/main.c.obj: ../main.c \
   C:/Program\ Files/JetBrains/CLion\ 2022.2.3/bin/mingw/x86_64-w64-mingw32/include/_timeval.h \
   C:/Program\ Files/JetBrains/CLion\ 2022.2.3/bin/mingw/x86_64-w64-mingw32/include/sys/timeb.h \
   C:/Program\ Files/JetBrains/CLion\ 2022.2.3/bin/mingw/x86_64-w64-mingw32/include/sec_api/sys/timeb_s.h \
-  C:/Program\ Files/JetBrains/CLion\ 2022.2.3/bin/mingw/x86_64-w64-mingw32/include/pthread_time.h \
-  ../letters.h
+  C:/Program\ Files/JetBrains/CLion\ 2022.2.3/bin/mingw/x86_64-w64-mingw32/include/pthread_time.h
 
 
 ../main.c:
 
 ../scrematura.h:
-
-../games.h:
 
 ../svolgimento.h:
 
@@ -120,5 +116,3 @@ C:/Program\ Files/JetBrains/CLion\ 2022.2.3/bin/mingw/x86_64-w64-mingw32/include
 C:/Program\ Files/JetBrains/CLion\ 2022.2.3/bin/mingw/x86_64-w64-mingw32/include/sec_api/string_s.h:
 
 C:/Program\ Files/JetBrains/CLion\ 2022.2.3/bin/mingw/x86_64-w64-mingw32/include/_timeval.h:
-
-../letters.h:

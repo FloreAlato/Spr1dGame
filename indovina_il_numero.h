@@ -44,7 +44,7 @@ void layout_indovina(Elenco *giocatori, int numero_giocatori, int turno, int min
             printf("\n");
         }
     } else {
-        printf("\n\n\n\n\nFINE GIOCO!!!!\n\n\n\n\n");
+        printf("\n\n\n\n\nFINE GIOCO!!!!\n\n\n\n\n\n\n\n\n\n[%s]: Premi invio per continuare (invio)", game_name());
     }
 }
 

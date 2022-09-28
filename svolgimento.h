@@ -8,21 +8,26 @@
 #endif //DAVIDE_FLORE_66174_SVOLGIMENTO_H
 
 
-# include "scrematura.h"
+#define NUMERO_GIOCHI 2
+
+
+#include "scrematura.h"
 
 
 
 
 
-void svolgimento(Elenco *totale, int dim, Elenco *risultato, char *nome, int *numero_profili, ProfiloGiocatore *profili, int *numero_giocatori, int *numero_giocatori_veri) {
+void svolgimento(Elenco *totale, int dim, Elenco *risultato) {
 
     int gioco, winner, segnaposto, membri, scelta, i;
-    bool pla, game;
+    bool pla, front, is_game;
+    int f_man = 0;
 
     Elenco *rimpiazzo = NULL;
     int dim_rimpiazzo = dim;
 
-    Elenco gruppetto[4];
+    Elenco gruppetto[2];
+    int numero_gruppetti = dim;
 
     char nome_file[32];
 
@@ -42,88 +47,110 @@ void svolgimento(Elenco *totale, int dim, Elenco *risultato, char *nome, int *nu
         rimpiazzo[i] = totale[i];
     }
 
-    // ciclo che si ripete fino a lasciare solo due giocatori rimasti
-    while(dim_rimpiazzo > 2) {
-        pla = false;
 
-        // sceglie un gioco a caso
-        if(dim_rimpiazzo >= 5) {
-            gioco = rand_int(0, NUMERO_GIOCHI - 1);
-        } else {
-            gioco = rand_int(0, GIOCHI_SEMPLICI - 1);
-        }
 
-        // ricava il numero di giocatori per quel gioco
-        if(gioco >= GIOCHI_SEMPLICI) {
-            membri = 4;
-        } else {
-            membri = 2;
-        }
+    // riduce la lista a 2 giocatori
 
-        // riempie la squadra
-        for(i = 0; i < membri; i++) {
-            segnaposto = rand_int(0, 1);
+    // riempie casualmente i gruppetti
+    while(numero_gruppetti > 2) {
+
+        numero_gruppetti = dim_rimpiazzo / 2;
+
+
+        for(i = 0; i < numero_gruppetti; i++) {
+            pla = false;
+            front = false;
+
+            segnaposto = rand_int(0, dim_rimpiazzo - 1);
             gruppetto[i] = rimpiazzo[segnaposto];
+            rimpiazzo[segnaposto] = rimpiazzo[dim_rimpiazzo - 1];
+            dim_rimpiazzo--;
 
+            // se sono utenti, aggiorna le statistiche
             if(is_player(gruppetto[i])) {
                 gruppetto[i].p->giochi_giocati++;
                 pla = true;
+
+                if(frontman(gruppetto[i])) {
+                    front = true;
+                    f_man = i;
+                }
             }
 
-            rimpiazzo[segnaposto] = rimpiazzo[dim_rimpiazzo - 1];
-            dim_rimpiazzo--;
-        }
+            // sceglie il gioco a caso
+            gioco = rand_int(0, NUMERO_GIOCHI - 1);
 
-        // gioca la partita e ottiene il vincitore
-        if(pla) {
-            switch (gioco) {
-                case 0:
-                    winner = murra(gruppetto);
-                    break;
-                case 1:
-                    winner = tris(gruppetto);
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            winner = rand_int(0, membri - 1);
-        }
-
-        // Frontman dello Spr1d Game
-        i = 0;
-        do {
-            if(frontman(gruppetto[i])) {
-                winner = i;
-            }
-
-            i++;
-        } while(i < membri || frontman(gruppetto[i - 1]));
-
-        // uccide tutti i giocatori perdenti
-        for(i = 0; i < membri; i++) {
-            if(i == winner && is_player(gruppetto[i])) {
-                gruppetto[i].p->giochi_vinti++;
+            // gioca la partita o ricava il vincitore a caso
+            if(pla) {
+                switch (gioco) {
+                    case 0:
+                        printf("\n[%s]: Si gioca a Murra! (invio)", game_name());
+                        getchar();
+                        break;
+                    case 1:
+                        printf("\n[%s]: Si gioca a Tris! (invio)", game_name());
+                        getchar();
+                        break;
+                    default:
+                        printf("\nERRORE! Questo gioco non esiste!\n");
+                        exit(-1);
+                }
             } else {
-                totale[gruppetto[i].id].vivo = false;
+                winner = rand_int(0, 1);
             }
-        }
 
-        // SALVA LA PARTITA IN CORSO
-        printf("\n[%s]: Vuoi salvare la partita?\n[%s]", game_name(), nome);
-        scelta = si_no(": ");
+            // frontman dello Sprid Game
+            if(front) {
+                winner = f_man;
+            }
 
-        if((bool)scelta) {
-            printf("\n[%s]: Che nome vuoi dare al file? [ATTENTO, SE INSERISCI IL NOME DI UN FILE ESISTENTE, QUESTO VERRA' SOVRASCRITTO!]", game_name());
-            printf("\n[%s]: ", nome);
-            scanf(" %s", nome_file);
+            printf("\n[%s]: VINCE %s!! (invio)", game_name(), print_player(gruppetto[winner]));
+            getchar();
 
-            game = true;
-            save(numero_profili, profili, &game, nome_file, numero_giocatori, numero_giocatori_veri, totale);
+
+
+            // uccide i perdenti e aggiorna le vittorie
+            if(is_player(gruppetto[winner])) {
+                gruppetto[winner].p->giochi_vinti++;
+            }
+            if(is_player(gruppetto[(int)!(bool)winner])) {
+                giocatori[gruppetto[(int)!(bool)winner].id].vivo = false;
+            }
+
+
+
+
+            // SALVA LA PARTITA IN CORSO
+            if(pla) {
+                printf("\n[%s]: Vuoi salvare la partita? (si / no)\n[%s]", game_name(), nome_utente);
+                scelta = (bool)si_no(": ");
+
+                if(scelta) {
+                    printf("\n[%s]: Come vuoi chiamare il file di salvataggio? (ATTENZIONE, SE SCEGLI IL NOME DI UN FILE ESISTENTE, QUESTO VERRA' SOVRASCRITTO!)", game_name());
+                    scanf(" %s", nome_file);
+
+                    is_game = false;
+                    save(&is_game, nome_file);
+                    add_file(nome_file);
+
+                    printf("\n[%s]: Vuoi continuare a giocare? (si / no)\n[%s]", game_name(), nome_utente);
+                    scelta = (bool)si_no(": ");
+
+                    if(!scelta) {
+                        printf("[%s]: D'accordo, alla prossima!", game_name());
+                        exit(0);
+                    }
+
+                } else {
+                    printf("\n[%s]: Bene, allora continuiamo (invio)\n", game_name());
+                    getchar();
+                }
+            }
         }
     }
 
-    // recupera la coppia rimasta e mettila nel finale
+
+    // recupera la coppia finale
     i = 0, segnaposto = 0;
     while(segnaposto < 2) {
         if(totale[i].vivo) {
