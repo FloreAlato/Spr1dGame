@@ -107,7 +107,8 @@
 				6,
 				7,
 				8,
-				9
+				9,
+				10
 			]
 		}
 	],
@@ -162,6 +163,11 @@
 		{
 			"backtrace" : 1,
 			"path" : "pari_o_dispari.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "dadi.h",
 			"sourceGroupIndex" : 1
 		}
 	],

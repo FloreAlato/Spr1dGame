@@ -5,6 +5,8 @@ CMakeFiles/davide_flore_66174.dir/main.c.obj: ../main.c \
   ../svolgimento.h \
   ../scrematura.h \
   ../indovina_il_numero.h \
+  ../pari_o_dispari.h \
+  ../dadi.h \
   ../murra.h \
   ../tris.h \
   ../black_jack.h \
@@ -41,19 +43,23 @@ CMakeFiles/davide_flore_66174.dir/main.c.obj: ../main.c \
   C:/Program\ Files/JetBrains/CLion\ 2022.2.3/bin/mingw/x86_64-w64-mingw32/include/pthread_time.h
 
 
+../dadi.h:
+
 ../main.c:
 
 ../scrematura.h:
 
 ../svolgimento.h:
 
-../indovina_il_numero.h:
-
 ../black_jack.h:
+
+../indovina_il_numero.h:
 
 C:/Program\ Files/JetBrains/CLion\ 2022.2.3/bin/mingw/x86_64-w64-mingw32/include/corecrt_wstdlib.h:
 
 ../murra.h:
+
+../pari_o_dispari.h:
 
 ../tris.h:
 

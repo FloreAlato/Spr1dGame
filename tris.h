@@ -11,18 +11,19 @@
 #include "black_jack.h"
 
 
-typedef enum {centro, vicino, angolo, lontano, opposto}Strategy;
+//typedef enum {centro, vicino, angolo, lontano, opposto}Strategy;
 
 
 
 
 int tris(Elenco *);
 void stampa_tabella();
-void layout_tris(Elenco *, int);
+void layout_tris(Elenco *, int, bool);
 void stampa_turno(Elenco *, int, int);
 bool turno_tris(int *, Elenco);
 void tris_bot(int *, int);
 
+bool isCenter(const int *);
 bool isAngle(const int *);
 bool isEdge(const int *);
 
@@ -33,6 +34,28 @@ char tavola[3][3] = {
         '-', '-', '-',
         '-', '-', '-'
 };
+
+int mosse[9][2] = {
+        3, 3,
+        3, 3,
+        3, 3,
+        3, 3,
+        3, 3,
+        3, 3,
+        3, 3,
+        3, 3,
+        3, 3
+};
+
+int angles[4][2] = {
+        0, 0,
+        0, 2,
+        2, 0,
+        2, 2
+};
+
+
+
 
 
 
@@ -54,26 +77,12 @@ int tris(Elenco *coppia) {
 
 
 
-    int mosse[9][2] = {
-            3, 3,
-            3, 3,
-            3, 3,
-            3, 3,
-            3, 3,
-            3, 3,
-            3, 3,
-            3, 3,
-            3, 3
-    };
-
-
-
 
     // turno
     do {
         do {
             if(is_player(coppia[(int)i])) {
-                layout_tris(coppia, (int)i);
+                layout_tris(coppia, (int)i, false);
                 giusto = turno_tris(&coordinate[0], coppia[(int)i]);
 
                 if(giusto == true) {
@@ -81,11 +90,11 @@ int tris(Elenco *coppia) {
                 }
 
             } else {
-                layout_tris(coppia, (int)i);
-                // turno macchina
-                // scrivere AI
-                // usa i turni
+                layout_tris(coppia, (int)i, false);
+                tris_bot(&coordinate[0], i);
                 printf("\nhehe");
+
+                tavola[coordinate[0]][coordinate[1]] = segni[(int)i];
 
                 getchar();
             }
@@ -144,7 +153,7 @@ void stampa_tabella() {
 
 
 
-void layout_tris(Elenco *players, int turno) {
+void layout_tris(Elenco *players, int turno, bool vittoria) {
 
     int i;
 
@@ -163,8 +172,12 @@ void layout_tris(Elenco *players, int turno) {
     // 14 in totale
 
 
-    for(i = 14; i <= PAGE_SIZE; i++) {
-        printf("\n");
+    if(vittoria) {
+        printf("\n\n\n\n\n[%s]: VITTORIAAA!!!\n\n\n\n\n", game_name());
+    } else {
+        for(i = 14; i <= PAGE_SIZE; i++) {
+            printf("\n");
+        }
     }
 }
 
@@ -241,19 +254,19 @@ bool turno_tris(int *coordinate, Elenco giocatore) {
                 return true;
 
             } else {
-                printf("QUESTA CASELLA E' GIA' OCCUPATA!!!!!");
+                printf("\nQUESTA CASELLA E' GIA' OCCUPATA!!!!!");
                 getchar();
                 return false;
             }
 
         } else {
-            printf("QUESTA CASELLA NON ESISTE!!!!!");
+            printf("\nQUESTA CASELLA NON ESISTE!!!!!");
             getchar();
             return false;
         }
 
     } else {
-        printf("FORMATO SBAGLIATO!!!!!");
+        printf("\nFORMATO SBAGLIATO!!!!!");
         getchar();
         return false;
     }
@@ -266,8 +279,28 @@ bool turno_tris(int *coordinate, Elenco giocatore) {
 
 void tris_bot(int *coordinate, int turno) {
 
+    int segnaposto;
+
     if(turno == 0) {
-        // angolo a caso
+        // se inizia il bot mette in un angolo a caso
+        segnaposto = rand_int(0, 3);
+        coordinate[0] = angles[segnaposto][0];
+        coordinate[1] = angles[segnaposto][1];
+
+    } else if(turno == 1) {
+        // se tu metti in un angolo, mette al centro
+        if(isAngle(mosse[0])) {
+            coordinate[0] = coordinate[1] = 1;
+        } else {
+            // altrimenti mette in un angolo a caso
+            // che sia diverso da dove hai messo tu
+            do {
+                segnaposto = rand_int(0, 3);
+            } while(angles[segnaposto][0] == mosse[0][0] && angles[segnaposto][1] == mosse[0][1]);
+            coordinate[0] = angles[segnaposto][0];
+            coordinate[1] = angles[segnaposto][1];
+        }
+    } else if(turno == 2) {
 
     }
 }
@@ -284,18 +317,24 @@ bool check_tris(const int *coord, char sign) {
 }
 
 
-
-
-bool isAngle(const int *spot) {
-    if((spot[0] == 0 || spot[0] == 2) && (spot[1] == 0 || spot[1] == 2)) {
+bool isCenter(const int *coordinate) {
+    if(coordinate[0] == coordinate[1] == 1) {
         return true;
     } else {
         return false;
     }
 }
 
-bool isEdge(const int *spot) {
-    if((spot[0] == 1 && spot[1] != 1) || (spot[1] == 1 && spot[0] != 1)) {
+bool isAngle(const int *coordinate) {
+    if(coordinate[0] == coordinate[1] && (coordinate[0] == 0 || coordinate[1] == 2)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool isEdge(const int *coordinate) {
+    if(!isAngle(coordinate) && !isCenter(coordinate)) {
         return true;
     } else {
         return false;
