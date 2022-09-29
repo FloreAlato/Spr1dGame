@@ -13,35 +13,6 @@ int main() {
     srand(time(NULL));
 
 
-    ProfiloGiocatore paolo = {
-            0,
-            "Paolo il Bello",
-            0,
-            0,
-            0,
-            0,
-            0,
-    };
-
-    Elenco fin[2] = {
-            0,
-            true,
-            &paolo,
-            1,
-            true,
-            NULL
-    };
-
-    getchar();
-    int d = tris(fin);
-    getchar();
-
-
-
-
-    return 0;
-
-
 
 
     // le variabili sono organizzate in ordine di apparizione o importanza

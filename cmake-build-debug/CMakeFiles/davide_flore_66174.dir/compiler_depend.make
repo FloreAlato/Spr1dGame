@@ -5,6 +5,7 @@ CMakeFiles/davide_flore_66174.dir/main.c.obj: ../main.c \
   ../svolgimento.h \
   ../scrematura.h \
   ../indovina_il_numero.h \
+  ../morra_cinese.h \
   ../pari_o_dispari.h \
   ../dadi.h \
   ../murra.h \
@@ -55,6 +56,12 @@ CMakeFiles/davide_flore_66174.dir/main.c.obj: ../main.c \
 
 ../indovina_il_numero.h:
 
+C:/Program\ Files/JetBrains/CLion\ 2022.2.3/bin/mingw/x86_64-w64-mingw32/include/sec_api/sys/timeb_s.h:
+
+../main.h:
+
+../morra_cinese.h:
+
 C:/Program\ Files/JetBrains/CLion\ 2022.2.3/bin/mingw/x86_64-w64-mingw32/include/corecrt_wstdlib.h:
 
 ../murra.h:
@@ -64,10 +71,6 @@ C:/Program\ Files/JetBrains/CLion\ 2022.2.3/bin/mingw/x86_64-w64-mingw32/include
 ../tris.h:
 
 ../file.h:
-
-C:/Program\ Files/JetBrains/CLion\ 2022.2.3/bin/mingw/x86_64-w64-mingw32/include/sec_api/sys/timeb_s.h:
-
-../main.h:
 
 C:/Program\ Files/JetBrains/CLion\ 2022.2.3/bin/mingw/x86_64-w64-mingw32/include/stdio.h:
 

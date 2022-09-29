@@ -108,7 +108,8 @@
 				7,
 				8,
 				9,
-				10
+				10,
+				11
 			]
 		}
 	],
@@ -168,6 +169,11 @@
 		{
 			"backtrace" : 1,
 			"path" : "dadi.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "morra_cinese.h",
 			"sourceGroupIndex" : 1
 		}
 	],

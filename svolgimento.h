@@ -8,7 +8,7 @@
 #endif //DAVIDE_FLORE_66174_SVOLGIMENTO_H
 
 
-#define NUMERO_GIOCHI 2
+#define NUMERO_GIOCHI 4
 
 
 #include "scrematura.h"
@@ -91,10 +91,22 @@ void svolgimento(Elenco *totale, int dim, Elenco *risultato) {
                     case 0:
                         printf("\n[%s]: Si gioca a Murra! (invio)", game_name());
                         getchar();
+                        winner = murra(gruppetto);
                         break;
                     case 1:
-                        printf("\n[%s]: Si gioca a Tris! (invio)", game_name());
+                        printf("\n[%s]: Si gioca a Morra Cinese! (invio)", game_name());
                         getchar();
+                        winner = morra_cinese(gruppetto);
+                        break;
+                    case 2:
+                        printf("\n[%s]: Si gioca a Dadi! (invio)", game_name());
+                        getchar();
+                        winner = dadi(gruppetto);
+                        break;
+                    case 3:
+                        printf("\n[%s]: Si gioca a Pari o Dispari! (invio)", game_name());
+                        getchar();
+                        winner = pari_o_dispari(gruppetto);
                         break;
                     default:
                         printf("\nERRORE! Questo gioco non esiste!\n");

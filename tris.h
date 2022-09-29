@@ -11,7 +11,36 @@
 #include "black_jack.h"
 
 
-//typedef enum {centro, vicino, angolo, lontano, opposto}Strategy;
+
+
+
+
+
+
+
+// ATTENZIONE
+// QUESTO FILE NON APPORTA NESSUN CONTRIBUTO AL GIOCO
+// L'HO LASCIATO SOLO PERCHE' CI HO SPESO TROPPO TEMPO PER BUTTARLO VIA
+// NON E' NEMMENO COMMENTATO, MA TANTO NON SI GIOCA MAI A TRIS :'(
+
+
+
+
+
+
+typedef struct {
+    int pos[2];
+}coordinate;
+
+typedef struct {
+    coordinate pos;
+    coordinate opposite;
+    coordinate close[2];
+}angle;
+
+typedef struct {
+    coordinate pos;
+}center;
 
 
 
@@ -26,6 +55,16 @@ void tris_bot(int *, int);
 bool isCenter(const int *);
 bool isAngle(const int *);
 bool isEdge(const int *);
+bool oppositeAngle(const int *, const int *);
+bool closeAngle(const int *, const int *);
+
+bool equals(coordinate c1, coordinate c2) {
+    if(c1.pos[0] == c2.pos[0] && c1.pos[1] == c2.pos[1]) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 
 
@@ -301,7 +340,36 @@ void tris_bot(int *coordinate, int turno) {
             coordinate[1] = angles[segnaposto][1];
         }
     } else if(turno == 2) {
-
+        // se lo metti al centro, lo mette nell'angolo opposto (ovvero quell'angolo che ha le coordinate totalmente opposte oppure inverse)
+        if(isCenter(mosse[1])) {
+            if(mosse[0][0] == mosse[0][1]) {
+                if(mosse[0][0] == 2) {
+                    coordinate[0] = 0;
+                } else {
+                    coordinate[0] = 2;
+                }
+                coordinate[1] = coordinate[0];
+            } else {
+                coordinate[0] = mosse[0][1];
+                coordinate[1] = mosse[0][0];
+            }
+            // se invece lo metti nell'angolo opposto
+            // mette nell'angolo vicino
+        } else if(isAngle(mosse[1]) && oppositeAngle(mosse[0], mosse[1])) {
+            if(mosse[0][0] == mosse[0][1]) {
+                coordinate[0] = mosse[0][0];
+                if(coordinate[0] == 0) {
+                    coordinate[1] = 2;
+                } else {
+                    coordinate[1] = 0;
+                }
+            } else {
+                coordinate[0] = rand_int_between(0, 2);
+                coordinate[1] = coordinate[0];
+            }
+        }
+    } else if(turno == 3) {
+        //
     }
 }
 
@@ -338,6 +406,39 @@ bool isEdge(const int *coordinate) {
         return true;
     } else {
         return false;
+    }
+}
+
+
+bool oppositeAngle(const int *c1, const int *c2) {
+    if(c1[0] == c1[1]) {
+        if(c2[0] == c2[1] && c1[0] != c2[0]) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        if(c1[0] == c2[1] && c1[1] == c2[0]) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+
+bool closeAngle(const int *c1, const int *c2) {
+    if(c1[0] == c1[1]) {
+        if((c2[0] == c1[0] || c2[1] == c1[0]) && (abs(c2[0] - c2[1]) == 2)) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        if(c2[0] == c2[1]) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 

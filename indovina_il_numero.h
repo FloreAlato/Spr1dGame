@@ -8,7 +8,7 @@
 #endif //DAVIDE_FLORE_66174_INDOVINA_IL_NUMERO_H
 
 
-#include "pari_o_dispari.h"
+#include "morra_cinese.h"
 
 
 
